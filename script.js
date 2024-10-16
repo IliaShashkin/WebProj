@@ -1,30 +1,36 @@
-﻿const socket = new WebSocket('ws://localhost:8080');
+﻿const WebSocket = require('ws');
+const http = require('http');
+const server = http.createServer();
+const wsServer = new WebSocket.Server({ server });
 
-socket.addEventListener('open', (event) => {
-    console.log('Подключение установлено!');
+const corsMiddleware = function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+};
+
+server.on('request', corsMiddleware);
+
+wsServer.on('connection', (socket) => {
+    console.log('Новое соединение установлено.');
+
+    socket.on('message', (message) => {
+        console.log('Получено сообщение:', message);
+        const diceRoll = Math.floor(Math.random() * 20) + 1;
+        socket.send(diceRoll.toString());
+    });
+
+    socket.on('close', () => {
+        console.log('Соединение закрыто.');
+    });
+
+    socket.on('error', (error) => {
+        console.error('Ошибка WebSocket сервера:', error);
+    });
 });
 
-socket.addEventListener('close', (event) => {
-    console.log('Соединение закрыто:', event.reason);
+server.listen(8080, () => {
+    console.log('Сервер WebSocket запущен на ws://localhost:8080/');
 });
-
-socket.addEventListener('error', (event) => {
-    console.error('Ошибка WebSocket:', event);
-});
-
-socket.addEventListener('message', (event) => {
-    console.log('Получено сообщение:', event.data);
-    document.getElementById('dice').textContent = `🎲 ${event.data}`;
-});
-
-
-function rollDice() {
-    if (socket.readyState === WebSocket.OPEN) {
-        console.log('Кнопка нажата, отправка запроса на бросок кубика...');
-        socket.send('roll');
-    }
-    else
-    {
-        console.error('WebSocket не открыт. Текущий статус:', socket.readyState);
-    }
-}
