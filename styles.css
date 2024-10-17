@@ -13,7 +13,8 @@
 }
 
 #dice {
-    font-size: 5em;
+    width: 150px; /* Устанавливаем размер изображения кубика */
+    height: auto;
     margin-bottom: 20px;
 }
 
