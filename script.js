@@ -3,7 +3,7 @@
     const diceImage = document.getElementById('dice');
 
     // Обновляем картинку кубика в зависимости от выпавшего значения
-    diceImage.src = `images/dice${diceValue}.png`;
+    diceImage.src = `dice${diceValue}.png`;
 
     // Также можно обновить текст с результатом (необязательно)
     document.getElementById('result').innerHTML = `Результат: ${diceValue}`;
