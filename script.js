@@ -5,5 +5,5 @@
     diceImage.src = `dice${diceValue}.png`;
 
 
-    document.getElementById('result').innerHTML = `Результат: ${diceValue}`;
+    document.getElementById('result').innerHTML = `Result: ${diceValue}`;
 }
